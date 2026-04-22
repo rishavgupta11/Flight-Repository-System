@@ -1,5 +1,7 @@
 package com.flightapp.service;
 
+import com.flightapp.exception.BadRequestException;
+import com.flightapp.exception.ResourceNotFoundException;
 import com.flightapp.model.Booking;
 import com.flightapp.model.Flight;
 import com.flightapp.model.User;
@@ -32,20 +34,20 @@ public class BookingService {
 
         // Get user
         User user = userRepository.findById(userId)
-                .orElseThrow( () -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         // Get flight
         Flight flight = flightRepository.findById(flightId)
-                .orElseThrow( () -> new RuntimeException("Flight not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Flight not found"));
 
         // check seat availability
         if(flight.getAvailableSeats() <= 0) {
-            throw new RuntimeException("No seats available!");
+            throw new BadRequestException("No seats available!");
         }
 
         // check wallet balance
         if(user.getWalletBalance() < flight.getPrice()) {
-            throw new RuntimeException("Insufficient wallet balance!");
+            throw new BadRequestException("Insufficient wallet balance!");
         }
 
         // deduct money from wallet
@@ -65,10 +67,23 @@ public class BookingService {
         return bookingRepository.save(booking);
     }
 
+    @Transactional
     public void cancelBooking(Long id) {
         Booking booking = bookingRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Booking not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Booking not found"));
+
+        if ("CANCELLED".equalsIgnoreCase(booking.getStatus())) {
+            throw new BadRequestException("Booking is already cancelled");
+        }
+        User user = booking.getUser();
+        Flight flight = booking.getFlight();
+
+        user.setWalletBalance(user.getWalletBalance() + flight.getPrice());
+        flight.setAvailableSeats(flight.getAvailableSeats() + 1);
         booking.setStatus("CANCELLED");
+
+        userRepository.save(user);
+        flightRepository.save(flight);
         bookingRepository.save(booking);
     }
 }

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flight Repository System</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="bg-shape bg-shape-a"></div>
+  <div class="bg-shape bg-shape-b"></div>
+
+  <header class="hero">
+    <h1>Flight Repository System</h1>
+    <p>Dashboard to test users, flights, and bookings.</p>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+      <h2>Create User</h2>
+      <form id="createUserForm">
+        <input id="userName" placeholder="Name" required>
+        <input id="userEmail" type="email" placeholder="Email" required>
+        <button type="submit">Create User</button>
+      </form>
+      <button class="secondary" id="loadUsersBtn">Load Users</button>
+      <pre id="usersResult"></pre>
+    </section>
+
+    <section class="card">
+      <h2>Create Flight</h2>
+      <form id="createFlightForm">
+        <input id="flightNumber" placeholder="Flight Number (AI-202)" required>
+        <input id="origin" placeholder="Origin (DEL)" required>
+        <input id="destination" placeholder="Destination (MUM)" required>
+        <input id="departureTime" type="datetime-local" required>
+        <input id="arrivalTime" type="datetime-local" required>
+        <input id="price" type="number" min="1" step="0.01" placeholder="Price" required>
+        <input id="availableSeats" type="number" min="1" step="1" placeholder="Available Seats" required>
+        <button type="submit">Create Flight</button>
+      </form>
+
+      <div class="row">
+        <button class="secondary" id="loadFlightsBtn">Load Flights</button>
+      </div>
+
+      <form id="searchFlightsForm" class="inline-form">
+        <input id="searchOrigin" placeholder="Search Origin (DEL)" required>
+        <input id="searchDestination" placeholder="Search Destination (MUM)" required>
+        <button type="submit">Search Flights</button>
+      </form>
+      <pre id="flightsResult"></pre>
+    </section>
+
+    <section class="card">
+      <h2>Bookings</h2>
+      <form id="bookFlightForm">
+        <input id="bookUserId" type="number" min="1" step="1" placeholder="User ID" required>
+        <input id="bookFlightId" type="number" min="1" step="1" placeholder="Flight ID" required>
+        <button type="submit">Book Flight</button>
+      </form>
+
+      <form id="cancelBookingForm" class="inline-form">
+        <input id="cancelBookingId" type="number" min="1" step="1" placeholder="Booking ID" required>
+        <button type="submit">Cancel Booking</button>
+      </form>
+
+      <div class="row">
+        <button class="secondary" id="loadBookingsBtn">Load All Bookings</button>
+      </div>
+      <pre id="bookingsResult"></pre>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <script src="/app.js"></script>
+</body>
+</html>
